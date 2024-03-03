@@ -1,31 +1,20 @@
 #!/usr/bin/python3
-"""Module"""
 
-import json
+"""Script that fetch 10 hot post for a given subreddit."""
+
 import requests
-import sys
 
 
 def number_of_subscribers(subreddit):
-    """Function that return the number of subscribers from REDDIT API"""
 
-    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-    headers = {"User-Agent": "MyRedditBot/1.0 (by YourUsername)"}
+    """Return the number of subscribers for the given subreddit."""
 
-    response = requests.get(url, headers=headers)
+    url = f"https://www.reddit.com/r/{subreddit}/about.json"
+    headers = {'User-Agent': 'My User Agent 1.0'}
+    response = requests.get(url, headers=headers, allow_redirects=False)
 
     if response.status_code == 200:
-        data = response.json()
-        subscribers = data["data"]["subscribers"]
-        return subscribers
-    else:
-        return 0
-
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Please pass an argument for the subreddit to search.")
-    else:
-        subreddit = sys.argv[1]
-        num_subscribers = number_of_subscribers(subreddit)
-        print(num_subscribers)
+        data = response.json().get('data')
+        if data:
+            return data.get('subscribers', 0)
+    return 0
