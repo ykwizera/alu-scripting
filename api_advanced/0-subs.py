@@ -1,20 +1,17 @@
 #!/usr/bin/python3
 """
-Script that queries subscribers on a given Reddit subreddit.
+Contains the number_of_subscribers function
 """
 
 import requests
-import praw
+
 
 def number_of_subscribers(subreddit):
-    """Return the total number of subscribers on a given subreddit."""
-    reddit = praw.Reddit(client_id='my_client_id',
-                           client_secret='my_client_secret',
-                           user_agent='my_user_agent')
-
-    try:
-        subreddit_data = reddit.subreddit(subreddit)
-        subscribers = subreddit_data.subscribers
-        return subscribers
-    except praw.exceptions.NotFound:
+    """returns the number of subscribers for a given subreddit"""
+    if subreddit is None or type(subreddit) is not str:
         return 0
+    r = requests.get('http://www.reddit.com/r/{}/about.json'.format(subreddit),
+                     headers={'User-Agent': '0x16-api_advanced:project:\
+v1.0.0 (by /u/firdaus_cartoon_jr)'}).json()
+    subs = r.get("data", {}).get("subscribers", 0)
+    return subs
